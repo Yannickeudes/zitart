@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VISITOR
+  ARTIST
+  ADMIN
+}
+
+enum ArtworkStatus {
+  BROUILLON
+  EN_ATTENTE
+  PUBLIE
+  REFUSE
+}
+
+enum Availability {
+  DISPONIBLE
+  RESERVE
+  VENDU
+}
+
+enum MessageStatus {
+  NOUVEAU
+  LU
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(VISITOR)
+  createdAt    DateTime @default(now())
+  artist       Artist?
+  favorites    Favorite[]
+  messages     ContactMessage[] @relation("MessageAuthor")
+}
+
+model Artist {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio         String?
+  location    String?
+  disciplines String?
+  website     String?
+  instagram   String?
+  twitter     String?
+  avatar      String?
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  artworks    Artwork[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  artworks    Artwork[]
+}
+
+model Artwork {
+  id           String       @id @default(cuid())
+  title        String
+  slug         String       @unique
+  description  String?
+  image        String
+  year         Int?
+  techniques   String?
+  dimensions   String?
+  price        Float?
+  availability Availability @default(DISPONIBLE)
+  status       ArtworkStatus @default(EN_ATTENTE)
+  featured     Boolean      @default(false)
+  views        Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  artistId     String
+  artist       Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  categoryId   String
+  category     Category     @relation(fields: [categoryId], references: [id])
+  favorites    Favorite[]
+  messages     ContactMessage[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artworkId String
+  artwork   Artwork  @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  @@unique([userId, artworkId])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  image       String?
+  date        DateTime
+  location    String?
+  organizer   String?
+  link        String?
+  createdAt   DateTime @default(now())
+}
+
+model ContactMessage {
+  id         String        @id @default(cuid())
+  name       String
+  email      String
+  subject    String?
+  message    String
+  status     MessageStatus @default(NOUVEAU)
+  createdAt  DateTime      @default(now())
+  artworkId  String?
+  artwork    Artwork?      @relation(fields: [artworkId], references: [id], onDelete: SetNull)
+  authorId   String?
+  author     User?         @relation("MessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+}
