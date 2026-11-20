@@ -33,7 +33,7 @@ export default function Contact() {
               <div className="rounded-2xl border border-ink/10 p-7">
                 <p className="text-[11px] uppercase tracking-[0.25em] text-clay">Coordonnées</p>
                 <p className="mt-3 text-fog text-sm">bonjour@zitart.art</p>
-                <p className="text-fog text-sm">Abidjan · Dakar · Lagos · Paris</p>
+                <p className="text-fog text-sm">Lomé · Abidjan · Dakar · Paris</p>
               </div>
             </div>
           </Reveal>

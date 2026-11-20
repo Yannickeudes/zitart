@@ -35,7 +35,7 @@ export default function Footer() {
             <p className="text-[11px] uppercase tracking-[0.2em] text-fog mb-4">Contact</p>
             <ul className="space-y-2.5 text-sm text-fog">
               <li>bonjour@zitart.art</li>
-              <li>Abidjan · Dakar · Lagos · Paris</li>
+              <li>Lomé · Abidjan · Dakar · Paris</li>
             </ul>
           </div>
         </div>
